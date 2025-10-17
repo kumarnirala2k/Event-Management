@@ -49,7 +49,9 @@ export default function Home() {
             >
               {/* Text Content */}
               <div className="md:w-1/2 space-y-4">
-                <h2 className="text-4xl font-bold">{approved[current].title}</h2>
+                <h2 className="text-4xl font-bold">
+                  {approved[current].title}
+                </h2>
                 <p className="text-lg opacity-90 line-clamp-3">
                   {approved[current].description}
                 </p>
@@ -90,8 +92,9 @@ export default function Home() {
             Create, discover, and manage local events
           </h1>
           <p className="text-gray-700 max-w-lg">
-            Find information on Mechanical & Electricity trade shows, trade fairs, business trade fairs, business trade exhibitions held across the globe.
-
+            Find information on Mechanical & Electricity trade shows, trade
+            fairs, business trade fairs, business trade exhibitions held across
+            the globe.
           </p>
           <div className="mt-8 flex gap-4 flex-wrap">
             <Link
@@ -117,22 +120,25 @@ export default function Home() {
             <p className="text-gray-500">No upcoming approved events.</p>
           ) : (
             <ul className="space-y-3">
-              {approved.slice(0, 4).map((e) => (
-                <li
-                  key={e.id}
-                  className="p-3 rounded cursor-pointer hover:bg-indigo-50 transition flex justify-between items-center"
-                >
-                  <Link
-                    to={`/events/${e.id}`}
-                    className="font-medium text-indigo-600 hover:underline"
+              {approved
+                .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date ascending
+                .slice(0, 4) // Take first 4 events
+                .map((e) => (
+                  <li
+                    key={e.id}
+                    className="p-3 rounded cursor-pointer hover:bg-indigo-50 transition flex justify-between items-center"
                   >
-                    {e.title}
-                  </Link>
-                  <span className="text-sm text-gray-500">
-                    {new Date(e.date).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
+                    <Link
+                      to={`/events/${e.id}`}
+                      className="font-medium text-indigo-600 hover:underline"
+                    >
+                      {e.title}
+                    </Link>
+                    <span className="text-sm text-gray-500">
+                      {new Date(e.date).toLocaleDateString()}
+                    </span>
+                  </li>
+                ))}
             </ul>
           )}
         </div>
@@ -181,7 +187,8 @@ export default function Home() {
             <div className="text-indigo-600 text-5xl">📝</div>
             <h4 className="text-xl font-semibold">Create Your Event</h4>
             <p className="text-gray-600">
-              Fill out the event details and submit for approval or auto-approve if you are admin.
+              Fill out the event details and submit for approval or auto-approve
+              if you are admin.
             </p>
           </div>
           <div className="space-y-4 p-6 bg-white rounded-lg shadow">
@@ -210,15 +217,21 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow p-6 italic text-gray-700">
               "This platform made it so easy to organize community meetups!"
-              <div className="mt-4 font-semibold text-indigo-600">- Priya S.</div>
+              <div className="mt-4 font-semibold text-indigo-600">
+                - Priya S.
+              </div>
             </div>
             <div className="bg-white rounded-lg shadow p-6 italic text-gray-700">
               "Admin dashboard is powerful and intuitive, I love it."
-              <div className="mt-4 font-semibold text-indigo-600">- Amit K.</div>
+              <div className="mt-4 font-semibold text-indigo-600">
+                - Amit K.
+              </div>
             </div>
             <div className="bg-white rounded-lg shadow p-6 italic text-gray-700">
               "The local events discovery helped me meet new people nearby."
-              <div className="mt-4 font-semibold text-indigo-600">- Neha M.</div>
+              <div className="mt-4 font-semibold text-indigo-600">
+                - Neha M.
+              </div>
             </div>
           </div>
         </div>
@@ -227,9 +240,16 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-indigo-700 text-white py-8 mt-20">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm">&copy; {new Date().getFullYear()} EventManager. All rights reserved.</p>
+          <p className="text-sm">
+            &copy; {new Date().getFullYear()} EventManager. All rights reserved.
+          </p>
           <nav className="space-x-6 mt-4 md:mt-0">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:underline">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline"
+            >
               GitHub
             </a>
             <a href="/privacy" className="hover:underline">
