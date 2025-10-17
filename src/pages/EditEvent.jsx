@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { readLS, writeLS, LS } from "../utils/localStorageUtils";
 import { getSession } from "../utils/session";
+import { toast } from "react-toastify";
 
 export default function EditEvent() {
   const { id } = useParams();
@@ -14,11 +15,12 @@ export default function EditEvent() {
     const found = events.find((e) => e.id === id);
     if (found) {
       found.tags = (found.tags || []).join(", ");
+      setEvent(found);
+    } else {
+      toast.error("Event not found!");
     }
-    setEvent(found);
   }, [id]);
 
-  // Handle file upload (convert to Base64)
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -31,9 +33,12 @@ export default function EditEvent() {
   };
 
   const handleSave = () => {
-    const { title, date, description, location, image, category, tags } = event;
-    if (!title || !date || !description || !location || !image || !category) {
-      return alert("All fields are required");
+    if (!event) return;
+    const { title, date, time, description, location, image, category, tags } = event;
+
+    if (!title || !date || !time || !description || !location || !image || !category) {
+      toast.error("⚠️ All fields are required!");
+      return;
     }
 
     const updatedEvent = {
@@ -43,13 +48,16 @@ export default function EditEvent() {
 
     const events = readLS(LS.EVENTS, []);
     const idx = events.findIndex((e) => e.id === updatedEvent.id);
-    if (idx === -1) return alert("Event not found");
+    if (idx === -1) {
+      toast.error("❌ Event not found!");
+      return;
+    }
 
     events[idx] = updatedEvent;
     writeLS(LS.EVENTS, events);
 
-    alert("Event updated successfully!");
-    navigate("/manage-events");
+    toast.success("✅ Event updated successfully!");
+    setTimeout(() => navigate("/manage-events"), 1500);
   };
 
   if (!session) return <p className="text-center p-6">Login required</p>;
@@ -80,6 +88,12 @@ export default function EditEvent() {
         type="date"
         className="w-full border rounded px-3 py-2 mb-3"
       />
+      <input
+        value={event.time}
+        onChange={(e) => setEvent({ ...event, time: e.target.value })}
+        type="time"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
 
       <input
         value={event.location}
@@ -88,7 +102,7 @@ export default function EditEvent() {
         className="w-full border rounded px-3 py-2 mb-3"
       />
 
-      {/* Image Upload Input */}
+      {/* Image Upload */}
       <div className="mb-3">
         <label className="block mb-1 text-sm font-medium">Upload Image</label>
         <input
@@ -134,7 +148,7 @@ export default function EditEvent() {
 
       <button
         onClick={handleSave}
-        className="w-full bg-indigo-600 text-white py-2 rounded"
+        className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
       >
         Save Changes
       </button>

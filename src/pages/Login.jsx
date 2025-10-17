@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { readLS, writeLS, LS } from "../utils/localStorageUtils";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,24 +16,33 @@ export default function Login() {
 
     const users = readLS(LS.USERS, []);
 
-    // Match username, password, and role
     const user = users.find(
       (u) => u.username === username && u.password === password && u.role === role
     );
 
     if (!user) {
-      alert("Invalid credentials or role!");
+      toast.error("❌ Invalid username, password, or role!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
       return;
     }
 
-    // Set session and redirect
+    // Save session
     writeLS(LS.SESSION, { username: user.username, role: user.role });
 
-    if (user.role === "admin") {
-      navigate("/admin-dashboard");
-    } else {
-      navigate("/user-dashboard");
-    }
+    toast.success(`✅ Welcome ${user.username}! Redirecting...`, {
+      position: "top-right",
+      autoClose: 1500,
+    });
+
+    setTimeout(() => {
+      if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/user-dashboard");
+      }
+    }, 1500);
   };
 
   return (
@@ -89,11 +100,14 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded"
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
         >
           Login
         </button>
       </form>
+
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 }

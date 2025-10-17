@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { readLS, writeLS, LS } from "../utils/localStorageUtils";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -17,61 +18,69 @@ export default function Signup() {
     // Check if user already exists
     const userExists = users.some((u) => u.username === username);
     if (userExists) {
-      alert("User already exists!");
+      toast.error("⚠️ User already exists!");
       return;
     }
 
-    const newUser = { name,username, password, role };
+    const newUser = { name, username, password, role };
     const updatedUsers = [...users, newUser];
 
     writeLS(LS.USERS, updatedUsers);
     writeLS(LS.SESSION, { username, role }); // Set session
 
-    navigate(role === "admin" ? "/admin-dashboard" : "/user-dashboard");
+    toast.success("✅ Signup successful! Redirecting...");
+    setTimeout(() => {
+      navigate(role === "admin" ? "/admin-dashboard" : "/user-dashboard");
+    }, 1500);
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-4">Signup</h2>
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow mt-8">
+      <h2 className="text-2xl font-semibold mb-4 text-center text-indigo-600">
+        Signup
+      </h2>
+
       <form onSubmit={handleSignup} className="space-y-4">
         <div>
-          <label className="block mb-1">Name</label>
-          <input 
-            className="w-full border px-3 py-2 rounded"
+          <label className="block mb-1 font-medium">Name</label>
+          <input
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
           />
-
         </div>
-        <div>
-          
 
-          <label className="block mb-1">Username</label>
+        <div>
+          <label className="block mb-1 font-medium">Username</label>
           <input
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="text"
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
           />
         </div>
+
         <div>
-          <label className="block mb-1">Password</label>
+          <label className="block mb-1 font-medium">Password</label>
           <input
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
           />
         </div>
 
-        {/* ✅ Role Selection */}
+        {/* Role Selection */}
         <div>
-          <label className="block mb-1">Role</label>
-          <div className="flex gap-4">
+          <label className="block mb-1 font-medium">Role</label>
+          <div className="flex gap-6">
             <label className="flex items-center">
               <input
                 type="radio"
@@ -97,7 +106,7 @@ export default function Signup() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded"
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
         >
           Sign Up
         </button>

@@ -72,7 +72,7 @@ export default function EventDetails() {
           <motion.img
             src={event.image}
             alt={event.title}
-            className="w-full h-64 object-cover rounded-xl mb-6"
+            className="w-full h-64 object-fill rounded-xl mb-6"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           />
@@ -101,8 +101,9 @@ export default function EventDetails() {
 
         {/* Meta Info */}
         <div className="flex flex-wrap gap-4 text-gray-600 mb-6 text-sm">
-          <p>📅 {new Date(event.date).toLocaleDateString()}</p>
-          {event.location && <p>📍 {event.location}</p>}
+          <p><span className="font-bold">Time : </span>{event.time && <span>{event.time}</span>} </p>
+          <p><span className="font-bold">Date : </span>{new Date(event.date).toLocaleDateString()}</p>
+          {event.location && <p><span className="font-bold">Location : </span> {event.location}</p>}
           {event.creatorId && (
             <p>👤 Created by: {event.user || event.creatorId}</p>
           )}

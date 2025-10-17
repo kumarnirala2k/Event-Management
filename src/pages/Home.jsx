@@ -70,7 +70,7 @@ export default function Home() {
                   <img
                     src={approved[current].image}
                     alt={approved[current].title}
-                    className="rounded-lg max-h-64 object-cover shadow-lg"
+                    className="rounded-lg max-h-64 shadow-lg bg-white h-160 w-120 object-center object-fill p-1"
                   />
                 ) : (
                   <div className="w-full max-w-md h-64 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-semibold select-none">

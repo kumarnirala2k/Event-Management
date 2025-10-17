@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Header from "./components/Header";
+import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -18,6 +20,7 @@ import { RequireAuth, RequireAdmin } from "./utils/session";
 
 export default function App() {
   return (
+    <>
     <Router>
       <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
         <Header />
@@ -83,5 +86,10 @@ export default function App() {
         </main>
       </div>
     </Router>
+
+
+    <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+    </>
+    
   );
 }

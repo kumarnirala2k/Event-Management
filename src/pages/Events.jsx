@@ -30,31 +30,30 @@ export default function Events() {
 
   // 🔍 Filter + Sort Logic
   const filteredEvents = useMemo(() => {
-  let filtered = approved;
+    let filtered = approved;
 
-  if (search.trim()) {
-    const q = search.toLowerCase();
-    filtered = filtered.filter(
-      (e) =>
-        (e.title?.toLowerCase().includes(q) ?? false) ||
-        (e.location?.toLowerCase().includes(q) ?? false) ||
-        (e.description?.toLowerCase().includes(q) ?? false)
-    );
-  }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(
+        (e) =>
+          (e.title?.toLowerCase().includes(q) ?? false) ||
+          (e.location?.toLowerCase().includes(q) ?? false) ||
+          (e.description?.toLowerCase().includes(q) ?? false)
+      );
+    }
 
-  if (filterCategory !== "All") {
-    filtered = filtered.filter((e) => e.category === filterCategory);
-  }
+    if (filterCategory !== "All") {
+      filtered = filtered.filter((e) => e.category === filterCategory);
+    }
 
-  filtered = filtered.sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-  });
+    filtered = filtered.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
 
-  return filtered;
-}, [approved, search, sortOrder, filterCategory]);
-
+    return filtered;
+  }, [approved, search, sortOrder, filterCategory]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -98,7 +97,7 @@ export default function Events() {
       {filteredEvents.length === 0 ? (
         <p className="text-center text-gray-500 text-lg">No events found.</p>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {filteredEvents.map((e, index) => (
             <motion.div
               key={e.id}
@@ -107,7 +106,7 @@ export default function Events() {
               animate="visible"
               whileHover="hover"
               variants={cardVariants}
-              className="rounded-2xl overflow-hidden cursor-pointer"
+              className="rounded-2xl overflow-hidden cursor-pointer "
             >
               <Link
                 to={`/events/${e.id}`}
@@ -117,7 +116,7 @@ export default function Events() {
                   <motion.img
                     src={e.image}
                     alt={e.title}
-                    className="h-48 w-full object-cover"
+                    className="h-48 w-full object-fill p-2"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.3 }}
                   />
@@ -132,6 +131,10 @@ export default function Events() {
                   </h3>
                   <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
                     <span>{new Date(e.date).toLocaleDateString()}</span>
+                    {e.time && <span>{e.time}</span>}
+                    
+                  </div>
+                  <span className="pt-1 pb-1">
                     {e.category && (
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -142,7 +145,8 @@ export default function Events() {
                         {e.category}
                       </span>
                     )}
-                  </div>
+                  </span>
+                  
                   {e.location && (
                     <p className="text-sm text-gray-600 mb-2">📍 {e.location}</p>
                   )}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { readLS, writeLS, LS } from "../utils/localStorageUtils";
 import { getSession } from "../utils/session";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify"; // ✅ Import Toastify
 
 export default function CreateEvent() {
   const session = getSession();
@@ -10,9 +11,10 @@ export default function CreateEvent() {
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [image, setImage] = useState(""); // Base64 image
+  const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
 
@@ -21,15 +23,14 @@ export default function CreateEvent() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result); // Base64 image data
-    };
+    reader.onloadend = () => setImage(reader.result);
     reader.readAsDataURL(file);
   };
 
   const handleCreate = () => {
-    if (!title || !date || !description || !location || !image || !category) {
-      return alert("All fields are required");
+    if (!title || !date || !time || !description || !location || !image || !category) {
+      toast.error("⚠️ All fields are required!");
+      return;
     }
 
     const events = readLS(LS.EVENTS, []);
@@ -37,11 +38,12 @@ export default function CreateEvent() {
       id: uuidv4(),
       title,
       date,
+      time,
       description,
       location,
       image,
       category,
-      tags: tags.split(",").map(tag => tag.trim()).filter(tag => tag !== ""),
+      tags: tags.split(",").map((tag) => tag.trim()).filter((tag) => tag !== ""),
       creatorId: session.id,
       approved: session.role === "admin",
     };
@@ -49,13 +51,13 @@ export default function CreateEvent() {
     events.push(newEvent);
     writeLS(LS.EVENTS, events);
 
-    alert("Event created successfully!");
-    navigate("/events");
+    toast.success("🎉 Event created successfully!");
+    setTimeout(() => navigate("/events"), 1000);
   };
 
   if (!session) {
     return (
-      <div className="text-center p-6">
+      <div className="text-center p-6 text-lg text-gray-600">
         Please login to create events.
       </div>
     );
@@ -63,7 +65,9 @@ export default function CreateEvent() {
 
   return (
     <div className="max-w-lg mx-auto bg-white p-6 rounded-xl shadow mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Create Event</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+        Create Event
+      </h2>
 
       <input
         value={title}
@@ -72,10 +76,19 @@ export default function CreateEvent() {
         className="w-full border rounded px-3 py-2 mb-3"
       />
 
+      <label className="block mb-1 text-sm font-medium">Date</label>
       <input
+        type="date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
-        type="date"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
+
+      <label className="block mb-1 text-sm font-medium">Time</label>
+      <input
+        type="time"
+        value={time}
+        onChange={(e) => setTime(e.target.value)}
         className="w-full border rounded px-3 py-2 mb-3"
       />
 
@@ -86,7 +99,7 @@ export default function CreateEvent() {
         className="w-full border rounded px-3 py-2 mb-3"
       />
 
-      {/* Image Upload Input */}
+      {/* Image Upload */}
       <div className="mb-3">
         <label className="block mb-1 text-sm font-medium">Upload Image</label>
         <input
@@ -99,7 +112,7 @@ export default function CreateEvent() {
           <img
             src={image}
             alt="Preview"
-            className="mt-3 w-full rounded-lg shadow"
+            className="mt-3 w-full rounded-lg shadow object-fill h-50 p-2"
           />
         )}
       </div>
@@ -132,7 +145,7 @@ export default function CreateEvent() {
 
       <button
         onClick={handleCreate}
-        className="w-full bg-indigo-600 text-white py-2 rounded"
+        className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition-all"
       >
         Create Event
       </button>
